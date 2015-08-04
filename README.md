@@ -4,7 +4,7 @@ Shell script to make GPG encryption easy, with a minimalist CLI.
 
 - Asymmetric (Public-key cryptography)
 - Symmetric (AES, Blowfish or Twofish ciphers)
-- Decrypt gpg files
+- Decrypt GPG files
 - Sign files
 - Verify signature
 - Smartcard operations
