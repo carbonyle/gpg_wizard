@@ -22,12 +22,12 @@ fi
 osascript -e 'display notification "Greetings" with title "AI"'
 
 read -p "$(echo -e '
-1: Asymmetric \b
-2: Symmetric \b
+1: Asymmetric (Public-key cryptography) \b
+2: Symmetric (AES, Blowfish or Twofish ciphers) \b
 3: Decrypt \b
 4: Sign \b
 5: Verify \b
-6: Smartcard menu \b
+6: Smartcard operations \b
 7: Other \b
 8: exit\n\b')" choice
 
