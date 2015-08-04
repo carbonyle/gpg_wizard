@@ -1,7 +1,11 @@
 # gpg_wizard
 
-Shell script to make GPG encryption easy. 
+Shell script to make GPG encryption easy, with a minimalist CLI. 
 
-Asymmetric: encrypt + sign or encrypt -keyids
-
-Symmetric: AES, Blowfish or Twofish ciphers
+- Asymmetric (Public-key cryptography)
+- Symmetric (AES, Blowfish or Twofish ciphers)
+- Decrypt gpg files
+- Sign files
+- Verify signature
+- Smartcard operations
+- Others (creation of encrypted images, list of email address from public-keyring)
