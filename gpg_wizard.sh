@@ -44,7 +44,7 @@ read -p "$(echo -e '
             elif [[ $asymm_option =~ ^([3])$ ]]
             then read -p "$(echo -e 'Email of the recipient: \n\b')" recipient && read -p "$(echo -e 'File to encrypt: \n\b')" file_to_encrypt && gpg -r $recipient -e $file_to_encrypt
             elif [[ $asymm_option =~ ^([4])$ ]]
-            then  echo "bye" && exit 0
+            then  echo "bye" && osascript -e 'display notification "See you again!" with title "AI"' && exit 0
             else echo "Invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
         fi
     elif [[ $choice =~ ^([2])$ ]]
@@ -58,7 +58,7 @@ read -p "$(echo -e '
             else echo "Invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
         fi
     elif [[ $choice =~ ^([3])$ ]]
-    then read -p "$(echo -e 'File to decrypt: \n\b')" file_to_decrypt && gpg -o /Users/$USER/Desktop/"$(basename $file_to_decrypt .gpg)" -d $file_to_decrypt
+    then read -p "$(echo -e 'File to decrypt: \n\b')" file_to_decrypt && gpg -o "$(basename $file_to_decrypt .gpg)" -d $file_to_decrypt && mv "$(basename $file_to_decrypt .gpg)" "$(dirname $file_to_decrypt)"
     elif [[ $choice =~ ^([4])$ ]]
     then read -p "$(echo -e 'File to sign: \n\b')" file_to_sign && gpg -sb $file_to_sign
     elif [[ $choice =~ ^([5])$ ]]
@@ -74,7 +74,7 @@ read -p "$(echo -e '
             if [[ $card_operation =~ ^([1])$ ]]
                 then gpg --card-status
                 elif [[ $card_operation =~ ^([2])$ ]]
-                then gpg --list-keys | grep @
+                then gpg --list-keys
                 elif [[ $card_operation =~ ^([3])$ ]]
                 then gpg --list-secret-keys
                 elif [[ $card_operation =~ ^([4])$ ]]
@@ -87,18 +87,18 @@ read -p "$(echo -e '
                             fi
                 elif [[ $card_operation =~ ^([6])$ ]]
                 then echo "bye" && osascript -e 'display notification "See you again!" with title "AI"' && exit 0
-                else echo "invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
+                else echo "Invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
             fi
     elif [[ $choice =~ ^([7])$ ]]
     then clear && read -p "$(echo -e '
 1: Create a encrypted container (not using GPG)\b
-2: \b
+2: Print email addresses from public keyring\b
 3: \b
 4: exit\n\b')" other_options
             if [[ $other_options =~ ^([1])$ ]]
                 then read -p "$(echo -e 'size in MB (50m)\n\b')" size && read -p "$(echo -e 'name \n\b')" name && read -p "$(echo -e 'path \n\b')" path  && hdiutil create -size $size -fs HFS+ -encryption AES-256 -volname $name $path/$name.dmg
                 elif [[ $other_options =~ ^([2])$ ]]
-                then exit 0
+                then gpg --list-key | grep -o -E "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b" | sort | uniq -i
                 elif [[ $other_options =~ ^([3])$ ]]
                 then exit 0
                 elif [[ $other_options =~ ^([4])$ ]]
