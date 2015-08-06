@@ -6,9 +6,9 @@
 #  Created by Gaëtan Cherbuin on 27.07.15
 #
 
-#prepare gpg
+# Prepare GPG
 
-if system_profiler SPUSBDataType | grep -q Yubikey;
+if system_profiler SPUSBDataType | grep -q Yubikey; # Mac OS
 then pkill gpg-agent
 export PINENTRY_USER_DATA="USE_CURSES=1"
 gpg-agent --use-standard-socket --daemon
@@ -17,7 +17,7 @@ else
 echo "Insert Yubikey & run again" && osascript -e 'display notification "You might have forgotten something" with title "AI"'&& exit 1
 fi
 
-#menu
+# Main menu
 
 osascript -e 'display notification "Greetings" with title "AI"'
 
@@ -30,6 +30,8 @@ read -p "$(echo -e '
 6: Smartcard operations \b
 7: Other \b
 8: Exit \n\b')" choice
+
+# Asymmetric encryption
 
     if [[ $choice =~ ^([1aA])$ ]]
     then read -p "$(echo -e '
@@ -45,11 +47,14 @@ read -p "$(echo -e '
             elif [[ $asymm_option =~ ^([3])$ ]]
             then read -p "$(echo -e 'Email of the recipient: \n\b')" recipient && read -p "$(echo -e 'File to encrypt: \n\b')" file_to_encrypt && gpg -r $recipient -e $file_to_encrypt
             elif [[ $asymm_option =~ ^([4mM])$ ]]
-            then /Users/gaetan/git/gpg_wizard
+            then /Users/gaetan/git/gpg_wizard # User specific
             elif [[ $asymm_option =~ ^([5])$ ]]
             then  echo "bye" && osascript -e 'display notification "See you again!" with title "AI"' && exit 0
             else echo "Invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
         fi
+
+# Symmetric encryption
+
     elif [[ $choice =~ ^([2sS])$ ]]
     then read -p "$(echo -e 'File to encrypt: \n\b')" file_to_encrypt && read -p "$(echo -e 'Cipher: [A]ES, [B]lowfish or [T]wofish \n\b')" Symm_choice
         if [[ $Symm_choice =~ ^([aA])$ ]]
@@ -60,12 +65,24 @@ read -p "$(echo -e '
             then gpg --symmetric --cipher-algo TWOFISH $file_to_encrypt
             else echo "Invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
         fi
+
+# Decrypt
+
     elif [[ $choice =~ ^([3dD])$ ]]
     then read -p "$(echo -e 'File to decrypt: \n\b')" file_to_decrypt && gpg -o "$(basename $file_to_decrypt .gpg)" -d $file_to_decrypt && mv "$(basename $file_to_decrypt .gpg)" "$(dirname $file_to_decrypt)"
+
+# Sign
+
     elif [[ $choice =~ ^([4sS])$ ]]
     then read -p "$(echo -e 'File to sign: \n\b')" file_to_sign && gpg -sb $file_to_sign
+
+# Verify
+
     elif [[ $choice =~ ^([5vV])$ ]]
     then read -p "$(echo -e 'File to verify: \n\b')" file_to_verify && gpg --verify $file_to_verify
+
+# Smardcard menu
+
     elif [[ $choice =~ ^([6yY])$ ]]
     then clear && read -p "$(echo -e '
 1: Card status \b
@@ -90,35 +107,38 @@ read -p "$(echo -e '
                                 else osascript -e 'display notification "You shall not pass!" with title "AI"' && exit 1
                             fi
                 elif [[ $card_operation =~ ^([6mM])$ ]]
-                then /Users/gaetan/git/gpg_wizard
+                then /Users/gaetan/git/gpg_wizard # User specific
                 elif [[ $card_operation =~ ^([7qQ])$ ]]
                 then echo "bye" && osascript -e 'display notification "See you again!" with title "AI"' && exit 0
                 else echo "Invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
             fi
     elif [[ $choice =~ ^([7])$ ]]
     then clear && read -p "$(echo -e '
-1: Create a encrypted container (not using GPG) \b
+
+# Submenu
+
+1: Create a encrypted container (not using GPG) \b # Mac OS
 2: Print email addresses from public keyring \b
-3: Prepare gpg-agent for Mail \b
+3: Prepare gpg-agent for Mail \b # Mac OS
 4: Run ssh script \b
 5: Run backup script \b
 6: Main menu \b
 7: Exit \n\b')" other_options
             if [[ $other_options =~ ^([1])$ ]]
-                then read -p "$(echo -e 'size in MB (50m)\n\b')" size && read -p "$(echo -e 'name \n\b')" name && read -p "$(echo -e 'path \n\b')" path  && hdiutil create -size $size -fs HFS+ -encryption AES-256 -volname $name $path/$name.dmg
+                then read -p "$(echo -e 'size in MB (50m)\n\b')" size && read -p "$(echo -e 'name \n\b')" name && read -p "$(echo -e 'path \n\b')" path  && hdiutil create -size $size -fs HFS+ -encryption AES-256 -volname $name $path/$name.dmg # Mac OS
                 elif [[ $other_options =~ ^([2])$ ]]
                 then gpg --list-key | grep -o -E "\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}\b" | sort | uniq -i
                 elif [[ $other_options =~ ^([3])$ ]]
                 then    pkill gpg-agent
                         gpg-agent
                         clear
-                        open /Applications/Mail.app
+                        open /Applications/Mail.app # Mac OS
                 elif [[ $other_options =~ ^([4])$ ]]
-                then /Users/gaetan/git/ssh_script
+                then /Users/gaetan/git/ssh_script # User specific
                 elif [[ $other_options =~ ^([5])$ ]]
-                then /Users/gaetan/git/backup_
+                then /Users/gaetan/git/backup_ # User specific
                 elif [[ $other_options =~ ^([6mM])$ ]]
-                then /Users/gaetan/git/gpg_wizard
+                then /Users/gaetan/git/gpg_wizard # User specific
                 elif [[ $other_options =~ ^([7qQ])$ ]]
                 then echo "bye" && osascript -e 'display notification "See you again!" with title "AI"' && exit 0
                 else echo "invalid choice" && osascript -e 'display notification "What happened?" with title "AI"' && exit 1
